@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
 #include "WFC2DConfig.h"
-#include "UTile.generated.h"
+#include "Tile.generated.h"
 
 /**
  *
  */
 UCLASS()
-class WFC2DEDITOR_API UTile : public UObject
+class WFC2D_API UTile : public UObject
 {
 	GENERATED_BODY()
 public:
@@ -22,16 +23,18 @@ protected:
 	ECellDirection GetDirection(ECellDirection In);
 
 public:
+	/* 当前Tile的ID */
 	UPROPERTY()
-	int TileID;												// 当前Tile的ID
+	int TileID;												
 
+	/*  当前Tile的贴图 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* TileTexture {nullptr};						// 当前Tile的贴图
+	UTexture2D* TileTexture { nullptr };					
 
 private:
-	TMap<ECellDirection, TArray<int>> PossibileIDsMap;		// 方向与其对应的可选的 Tile ID
+	/* 方向与其对应的可选的 Tile ID */
+	TMap<ECellDirection, TArray<int>> PossibileIDsMap;		
 
-	ESpriteRotate Rotate{ ESpriteRotate::Rotate_0 };		// 默认无旋转
-
-
+	/* 默认无旋转 */
+	ESpriteRotate Rotate{ ESpriteRotate::Rotate_0 };		
 };

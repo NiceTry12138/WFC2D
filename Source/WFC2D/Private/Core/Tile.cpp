@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Core/UTile.h"
+#include "Core/Tile.h"
 
 void UTile::InitTile(int Id, UTexture2D* Texture)
 {

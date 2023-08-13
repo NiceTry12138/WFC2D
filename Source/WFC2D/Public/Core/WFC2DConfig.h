@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+#include "UObject/NoExportTypes.h"
 #include "WFC2DConfig.generated.h"
 
 UENUM()
@@ -22,4 +22,14 @@ enum class ECellDirection : uint8
 	Right,		// 右
 	Bottom,		// 下
 	Left,		// 左
+};
+
+/**
+ * 
+ */
+UCLASS()
+class WFC2D_API UWFC2DConfig : public UObject
+{
+	GENERATED_BODY()
+	
 };

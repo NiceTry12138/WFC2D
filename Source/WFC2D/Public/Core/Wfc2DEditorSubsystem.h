@@ -10,14 +10,13 @@
  * 
  */
 UCLASS()
-class WFC2DEDITOR_API UWfc2DEditorSubsystem : public UEditorSubsystem
+class WFC2D_API UWfc2DEditorSubsystem : public UEditorSubsystem
 {
 	GENERATED_BODY()
-	
+
 public:
-	int GetTileIndex();
+	FString GetTileIndex();
 
 private:
-	int Index{0};
-
+	int Index{ 0 };
 };
