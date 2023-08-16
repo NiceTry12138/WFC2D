@@ -15,3 +15,22 @@ TODO List
 4. WFC 算法
    
 在编写的过程中发现的问题会继续往后添加
+
+目前存在的问题
+
+1. WFC2DHelper.cpp 文件中 43 行 SImage 的创建使用 FSlateDynamicImageBrush 会警告 GC相关
+
+```cpp
+TSharedRef<SImage> UWFC2DHelper::CreateTileImage(UTile* Tile)
+{
+	return SNew(SImage).
+		Image(new FSlateDynamicImageBrush(Tile->GetTexture(), TileSize, FName("Tile")));
+}
+```
+
+2. WFC2DHelper.cpp 文件中 37 行 UTile 的 ID 是手动指定的
+
+```cpp
+auto Tile = NewObject<UTile>();
+Tile->InitTile(1, TileTexture);
+```

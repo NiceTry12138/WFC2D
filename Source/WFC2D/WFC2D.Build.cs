@@ -43,7 +43,8 @@ public class WFC2D : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "EditorSubsystem"
+                "EditorSubsystem",
+                "ContentBrowser",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
