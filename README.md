@@ -34,3 +34,10 @@ TSharedRef<SImage> UWFC2DHelper::CreateTileImage(UTile* Tile)
 auto Tile = NewObject<UTile>();
 Tile->InitTile(1, TileTexture);
 ```
+
+2023.8.23
+
+更新了 SelectItem 和 SelectItemWidget
+
+SelectItem: 包含一个SImage 和 一个 SCheckBox 的组合控件
+SelectItemWidget: 包含SGridPanel，用于添加SelectItem ，显示选中的Tile和其他Tile的连接性

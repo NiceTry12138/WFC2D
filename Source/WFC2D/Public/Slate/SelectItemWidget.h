@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/PanelWidget.h"
-#include "Widgets/SCanvas.h"
 #include "Widgets/SOverlay.h"
 
 /**
- * 选项Item 本质是一个图片 + 单选框，用于表示是否可以连接
+ * 九宫格 显示一个Tile的上下左右、或者八方向的Tile关系
  */
 //UCLASS()
 class WFC2D_API SSelectItemWidget : public SOverlay

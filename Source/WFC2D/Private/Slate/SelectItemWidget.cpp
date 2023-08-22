@@ -4,6 +4,7 @@
 #include "Slate/SelectItemWidget.h"
 #include "Styling/AppStyle.h"
 #include "Widgets/Layout/SGridPanel.h"
+#include "Slate/SelectItem.h"
 
 #define LOCTEXT_NAMESPACE "SelectItemWidget"
 
@@ -17,8 +18,7 @@ void SSelectItemWidget::Construct(const FArguments& InArgs)
 			GridPanel->SetColumnFill(Column, 1.0);
 			GridPanel->AddSlot(Row, Column, SGridPanel::Layer(1))
 			[
-				SNew(SImage)
-				.Image(FAppStyle::GetBrush("Icons.ChevronDown"))
+				SNew(SSelectItem)
 			];
 		}
 	}
