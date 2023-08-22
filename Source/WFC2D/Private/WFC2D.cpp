@@ -12,6 +12,8 @@
 #include "Core/Tile.h"
 #include "Core/WFC2DHelper.h"
 
+#include "Slate/SelectItemWidget.h"
+
 static const FName WFC2DTabName("WFC2D");
 
 #define LOCTEXT_NAMESPACE "FWFC2DModule"
@@ -66,17 +68,19 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 	TArray<UTile*> Tiles;
 	UWFC2DHelper::InitTiles(FName("/Game/Arts/Tiles"), Tiles);
 
-	auto Img = UWFC2DHelper::CreateTileImage(Tiles[0]);
+	//auto Img = UWFC2DHelper::CreateTileImage(Tiles[0]);
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
 		[
 			// Put your tab content here!
 			SNew(SBox)
-			.HAlign(HAlign_Center)
-			.VAlign(VAlign_Center)
+			.HAlign(HAlign_Fill)
+			.VAlign(VAlign_Fill)
 			[
-				Img
+				SNew(SSelectItemWidget)		
+				//SNew(STextBlock)
+				//.Text(WidgetText)
 			]
 		];
 }
