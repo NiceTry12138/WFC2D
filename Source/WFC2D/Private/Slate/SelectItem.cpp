@@ -30,6 +30,32 @@ void SSelectItem::Construct(const FArguments& InArgs)
 		.IsChecked(this, &SSelectItem::IsConnected)
 		.OnCheckStateChanged(this, &SSelectItem::TileConnectStateChanged)
 	];
+
+	//auto DirectionText = FText::FromString("NULL");
+
+	//switch (Direction.Get())
+	//{
+	//case ECellDirection::Bottom:
+	//	DirectionText = FText::FromString("Bottom");
+	//	break;
+	//case ECellDirection::Top:
+	//	DirectionText = FText::FromString("Top");
+	//	break;
+	//case ECellDirection::Left:
+	//	DirectionText = FText::FromString("Left");
+	//	break;
+	//case ECellDirection::Right:
+	//	DirectionText = FText::FromString("Right");
+	//	break;
+	//}
+
+	//AddSlot()
+	//.HAlign(HAlign_Fill)
+	//.VAlign(VAlign_Fill)
+	//[
+	//	SNew(STextBlock)
+	//	.Text(DirectionText)
+	//];
 }
 
 ECheckBoxState SSelectItem::IsConnected() const

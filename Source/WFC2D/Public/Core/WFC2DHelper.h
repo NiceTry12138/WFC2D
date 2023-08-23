@@ -7,6 +7,7 @@
 #include "WFC2DHelper.generated.h"
 
 class UTile;
+class UWfc2DEditorSubsystem;
 
 /**
  * 
@@ -20,6 +21,7 @@ public:
 	/* 通过输入的路径，遍历其中所有 UTexture 对象，并初始化到抽成 Tile 数组 */
 	static void InitTiles(const FName& ImportPath, TArray<UTile*> &Tiels);
 
+	static UWfc2DEditorSubsystem* GetWfc2dEditorSubsystem();
 
 private:
 

@@ -25,11 +25,7 @@ void UWFC2DHelper::InitTiles(const FName& ImportPath, TArray<UTile*> &Tiels)
 	Tiels.Empty();
 
 
-	UWfc2DEditorSubsystem* Wfc2DEditorSubsystem = GEditor->GetEditorSubsystem<UWfc2DEditorSubsystem>();
-	if (!Wfc2DEditorSubsystem) {
-		UE_LOG(LogTemp, Warning, TEXT("Wfc2d Plugin => Can't Find UWfc2DEditorSubsystem"));
-		return;
-	}
+	UWfc2DEditorSubsystem* Wfc2DEditorSubsystem = UWFC2DHelper::GetWfc2dEditorSubsystem();
 
 	for (const auto& AssetData : AssetArray) {		
 		UE_LOG(LogTemp, Log, TEXT("Wfc2d Plugin => Find Texture Path: %s"), *AssetData.AssetName.ToString());
@@ -46,4 +42,13 @@ void UWFC2DHelper::InitTiles(const FName& ImportPath, TArray<UTile*> &Tiels)
 
 		Tiels.Push(Tile);
 	}
+}
+
+UWfc2DEditorSubsystem* UWFC2DHelper::GetWfc2dEditorSubsystem()
+{
+	UWfc2DEditorSubsystem* Wfc2DEditorSubsystem = GEditor->GetEditorSubsystem<UWfc2DEditorSubsystem>();
+	if (!Wfc2DEditorSubsystem) {
+		UE_LOG(LogTemp, Warning, TEXT("Wfc2d Plugin => Can't Find UWfc2DEditorSubsystem"));
+	}
+	return Wfc2DEditorSubsystem;
 }
