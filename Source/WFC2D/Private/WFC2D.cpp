@@ -12,6 +12,7 @@
 #include "Core/Tile.h"
 #include "Core/WFC2DHelper.h"
 
+#include "Slate/TilesList.h"
 #include "Slate/SelectItemWidget.h"
 
 static const FName WFC2DTabName("WFC2D");
@@ -78,7 +79,8 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 			.HAlign(HAlign_Fill)
 			.VAlign(VAlign_Fill)
 			[
-				SNew(SSelectItemWidget)		
+				SNew(STilesList)
+				//SNew(SSelectItemWidget)		
 				//SNew(STextBlock)
 				//.Text(WidgetText)
 			]
