@@ -3,6 +3,7 @@
 
 #include "Core/WFC2DHelper.h"
 #include "Core/Tile.h"
+#include "Core/Wfc2DEditorSubsystem.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
 static const FVector2D TileSize = FVector2D(100, 100);
@@ -23,34 +24,26 @@ void UWFC2DHelper::InitTiles(const FName& ImportPath, TArray<UTile*> &Tiels)
 
 	Tiels.Empty();
 
+
+	UWfc2DEditorSubsystem* Wfc2DEditorSubsystem = GEditor->GetEditorSubsystem<UWfc2DEditorSubsystem>();
+	if (!Wfc2DEditorSubsystem) {
+		UE_LOG(LogTemp, Warning, TEXT("Wfc2d Plugin => Can't Find UWfc2DEditorSubsystem"));
+		return;
+	}
+
 	for (const auto& AssetData : AssetArray) {		
-		//UE_LOG(LogTemp, Log, TEXT("%s"), *AssetData.AssetName.ToString());
+		UE_LOG(LogTemp, Log, TEXT("Wfc2d Plugin => Find Texture Path: %s"), *AssetData.AssetName.ToString());
 		FStringAssetReference TexturePath = AssetData.PackageName.ToString();
 		UTexture2D* TileTexture = Cast<UTexture2D>(TexturePath.TryLoad());
 
 		if (!TileTexture) {
-			UE_LOG(LogTemp, Warning, TEXT("Load %s Faild"), *AssetData.PackageName.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("Wfc2d Plugin => Load %s Faild"), *AssetData.PackageName.ToString());
 			continue;
 		}
 
 		auto Tile = NewObject<UTile>();
-		Tile->InitTile(1, TileTexture);
+		Tile->InitTile(Wfc2DEditorSubsystem->GetTileIndex(), TileTexture);
 
 		Tiels.Push(Tile);
-	}
-}
-
-TSharedRef<SImage> UWFC2DHelper::CreateTileImage(UTile* Tile)
-{
-	return SNew(SImage).
-		Image(new FSlateDynamicImageBrush(Tile->GetTexture(), TileSize, FName("Tile")));
-}
-
-void UWFC2DHelper::CreateTileImage(TArray<UTile*> Tiles, TArray<TSharedRef<SImage>> TileImages)
-{
-	TileImages.Empty();
-	for(auto Tile : Tiles)
-	{
-		TileImages.Push(CreateTileImage(Tile));
 	}
 }

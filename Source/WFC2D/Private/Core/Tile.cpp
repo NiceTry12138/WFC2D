@@ -3,7 +3,7 @@
 
 #include "Core/Tile.h"
 
-void UTile::InitTile(int Id, UTexture2D* Texture)
+void UTile::InitTile(FString Id, UTexture2D* Texture)
 {
 	TileID = Id;
 	TileTexture = Texture;

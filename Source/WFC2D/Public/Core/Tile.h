@@ -15,7 +15,7 @@ class WFC2D_API UTile : public UObject
 {
 	GENERATED_BODY()
 public:
-	void InitTile(int Id, UTexture2D* Texture);
+	void InitTile(FString Id, UTexture2D* Texture);
 
 	void GetPossibleIds(ECellDirection Direction, TArray<int> PossibleIds);		// 获取上面相连方块的可能性，由于旋转的问题，返回值不固定
 
@@ -27,7 +27,7 @@ protected:
 public:
 	/* 当前Tile的ID */
 	UPROPERTY()
-	int TileID;												
+	FString TileID;
 
 	/*  当前Tile的贴图 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
