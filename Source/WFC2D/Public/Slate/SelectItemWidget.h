@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Widgets/SOverlay.h"
 
+class SSelectItem;
+
 struct SelectNode {
 	int RowIndex;
 	int ColIndex;
@@ -23,9 +25,13 @@ public:
 	
 	void Construct(const FArguments& InArgs);
 
+	void UpdateKeyTile(const FString KeyTileIndex);
+	void UpdateConnectTile(const FString ConnectTileIndex);
+
 private:
 	/* 用于显示 Key Tile 的 SImage 控件 */
 	TSharedPtr<SImage> KeyTileImage;	
+	FSlateBrush KeyTileBrush;
 
-	TArray<TSharedPtr<SWidget>> SelectTiles;
+	TArray<TSharedPtr<SSelectItem>> SelectTiles;
 };

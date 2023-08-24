@@ -23,6 +23,8 @@ public:
 
 	static UWfc2DEditorSubsystem* GetWfc2dEditorSubsystem();
 
+	static UTexture2D* GetTileTexture(const FString& TileIndex);
+
 private:
 
 };

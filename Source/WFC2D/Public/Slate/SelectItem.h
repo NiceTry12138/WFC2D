@@ -38,6 +38,8 @@ public:
 	/* 通过点击CheckBox，修改Tile之间的连接性 */
 	void TileConnectStateChanged(ECheckBoxState InNewRadioState);
 
+	void UpdateItemImage(const FString& TileIndex);
+
 private:
 	TSharedPtr<SWidget> ShowImage;
 	//TSharedPtr<SWidget> CheckBox;
@@ -47,4 +49,6 @@ private:
 	TAttribute<FString> ItemIndex;
 	TAttribute<FString> KeyItemIndex;
 	TAttribute<ECellDirection> Direction;
+
+	FSlateBrush ImageBrush;
 };

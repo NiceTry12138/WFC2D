@@ -6,6 +6,8 @@
 #include "EditorSubsystem.h"
 #include "Wfc2DEditorSubsystem.generated.h"
 
+class UTile;
+
 /**
  * 
  */
@@ -16,7 +18,14 @@ class WFC2D_API UWfc2DEditorSubsystem : public UEditorSubsystem
 
 public:
 	FString GetTileIndex();
+	void InitTiles(const FName& FilePath);
+
+	const TArray<UTile*>& GetTiles() const;
+	TArray<FString> GetTileIndexs();
+
+	const UTile* GetTile(const FString& TileIndex) const;
 
 private:
 	int Index{ 0 };
+	TArray<UTile*> Tiles;
 };

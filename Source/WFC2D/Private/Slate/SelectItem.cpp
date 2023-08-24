@@ -3,14 +3,17 @@
 
 #include "Slate/SelectItem.h"
 #include "Widgets/Input/SCheckBox.h"
+#include "Core/WFC2DHelper.h"
 
 void SSelectItem::Construct(const FArguments& InArgs)
 {
 	ItemIndex = InArgs._ItemIndex;
 	KeyItemIndex = InArgs._KeyItemIndex;
 	Direction = InArgs._Direction;
+	
+	ImageBrush.DrawAs = ESlateBrushDrawType::Image;
 
-	ShowImage = SNew(SImage).Image(FAppStyle::GetBrush(TEXT("Icons.PlusCircle")));
+	ShowImage = SNew(SImage).Image(&ImageBrush);
 	//CheckBox = SNew(SCheckBox);
 
 	AddSlot()
@@ -79,4 +82,9 @@ void SSelectItem::TileConnectStateChanged(ECheckBoxState InNewRadioState)
 		UE_LOG(LogTemp, Warning, TEXT("Undetermined"));
 		break;
 	}
+}
+
+void SSelectItem::UpdateItemImage(const FString& TileIndex)
+{
+	ImageBrush.SetResourceObject(UWFC2DHelper::GetTileTexture(TileIndex));
 }

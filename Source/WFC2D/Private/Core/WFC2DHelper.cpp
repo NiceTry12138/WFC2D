@@ -52,3 +52,10 @@ UWfc2DEditorSubsystem* UWFC2DHelper::GetWfc2dEditorSubsystem()
 	}
 	return Wfc2DEditorSubsystem;
 }
+
+UTexture2D* UWFC2DHelper::GetTileTexture(const FString& TileIndex)
+{
+	auto Tile = UWFC2DHelper::GetWfc2dEditorSubsystem()->GetTile(TileIndex);
+
+	return Tile->GetTexture();
+}

@@ -11,6 +11,7 @@
 
 #include "Core/Tile.h"
 #include "Core/WFC2DHelper.h"
+#include "Core/Wfc2DEditorSubsystem.h"
 
 #include "Slate/TilesList.h"
 #include "Slate/SelectItemWidget.h"
@@ -66,10 +67,14 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 		FText::FromString(TEXT("WFC2D.cpp"))
 		);
 
-	TArray<UTile*> Tiles;
-	UWFC2DHelper::InitTiles(FName("/Game/Arts/Tiles"), Tiles);
+	//TArray<UTile*> Tiles;
+	//UWFC2DHelper::InitTiles(FName("/Game/Arts/Tiles"), Tiles);
 
 	//auto Img = UWFC2DHelper::CreateTileImage(Tiles[0]);
+
+	UWFC2DHelper::GetWfc2dEditorSubsystem()->InitTiles(FName("/Game/Arts/Tiles"));
+
+	ConnectConfigWidget = SNew(SSelectItemWidget);
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
@@ -79,10 +84,44 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 			.HAlign(HAlign_Fill)
 			.VAlign(VAlign_Fill)
 			[
-				SNew(STilesList)
-				//SNew(SSelectItemWidget)		
-				//SNew(STextBlock)
-				//.Text(WidgetText)
+				SNew(SVerticalBox)
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(STextBlock)
+					.Text(FText(LOCTEXT("FWFC2DModuleKeyTile", "选择主方块")))
+				]
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(STilesList)
+					.OnSelectTileChanged_Raw(this, &FWFC2DModule::UpdateSelectTile)
+					.TileIndexs(UWFC2DHelper::GetWfc2dEditorSubsystem()->GetTileIndexs())
+				]
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(STextBlock)
+					.Text(FText(LOCTEXT("FWFC2DModuleConnectTile", "选择关联方块")))
+				]
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(STilesList)
+					.OnSelectTileChanged_Raw(this, &FWFC2DModule::UpdateSelectConnectTile)
+					.TileIndexs(UWFC2DHelper::GetWfc2dEditorSubsystem()->GetTileIndexs())
+				]
+				+ SVerticalBox::Slot()
+				.AutoHeight()
+				[
+					SNew(STextBlock)
+					.Text(FText(LOCTEXT("FWFC2DModuleConfigTile", "配置关联性")))
+				]
+				+ SVerticalBox::Slot()
+				.FillHeight(1.0f)
+				[
+					ConnectConfigWidget.ToSharedRef()
+				]
 			]
 		];
 }
@@ -90,6 +129,18 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 void FWFC2DModule::PluginButtonClicked()
 {
 	FGlobalTabmanager::Get()->TryInvokeTab(WFC2DTabName);
+}
+
+void FWFC2DModule::UpdateSelectTile(FString TileIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TileList Select -> %s"), *TileIndex);
+	ConnectConfigWidget->UpdateKeyTile(TileIndex);
+}
+
+void FWFC2DModule::UpdateSelectConnectTile(FString TileIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TileList Connect Select -> %s"), *TileIndex);
+	ConnectConfigWidget->UpdateConnectTile(TileIndex);
 }
 
 void FWFC2DModule::RegisterMenus()

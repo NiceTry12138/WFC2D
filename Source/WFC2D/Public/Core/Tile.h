@@ -19,7 +19,9 @@ public:
 
 	void GetPossibleIds(ECellDirection Direction, TArray<int> PossibleIds);		// 获取上面相连方块的可能性，由于旋转的问题，返回值不固定
 
-	inline UTexture2D* GetTexture() { return TileTexture; }
+	inline UTexture2D* GetTexture() const { return TileTexture; }
+
+	inline const FString GetIndex() const { return TileID; }
 
 protected:
 	ECellDirection GetDirection(ECellDirection In);
