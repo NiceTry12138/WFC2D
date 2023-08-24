@@ -64,6 +64,9 @@ void UWfc2DEditorSubsystem::ConnectTile(const FString& KeyTileId, const FString&
 	UTile* ConnectTile = GetTile(ConnectTileId);
 
 	KeyTile->ConnectId(Direction, ConnectTileId);
+	
+	// ECellDirection(((int)Direction + 2) % 4) 就是反向的意思，上变为下，左变为右
+	// KeyTile的上面是 ConnectTile，那么ConnectTile的下面就是KeyTile 
 	ConnectTile->ConnectId(ECellDirection(((int)Direction + 2) % 4), KeyTileId);
 }
 
