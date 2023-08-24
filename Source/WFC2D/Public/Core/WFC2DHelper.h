@@ -25,6 +25,12 @@ public:
 
 	static UTexture2D* GetTileTexture(const FString& TileIndex);
 
+	static bool IsConnect(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
+
+	static void ConnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
+
+	static void DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
+
 private:
 
 };

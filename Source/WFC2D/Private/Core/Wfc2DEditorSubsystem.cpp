@@ -35,7 +35,7 @@ TArray<FString> UWfc2DEditorSubsystem::GetTileIndexs()
 	return Result;
 }
 
-const UTile* UWfc2DEditorSubsystem::GetTile(const FString& FileIndex) const
+UTile* UWfc2DEditorSubsystem::GetTile(const FString& FileIndex) const
 {
 	// TODO: Tiles 应该使用 TSet/TMap 容器存储而不是TArray
 	for (const auto& Tile : Tiles) {
@@ -44,4 +44,34 @@ const UTile* UWfc2DEditorSubsystem::GetTile(const FString& FileIndex) const
 		}
 	}
 	return nullptr;
+}
+
+bool UWfc2DEditorSubsystem::IsConnect(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction)
+{
+	auto Tile = GetTile(KeyTile);
+	if (!Tile) {
+		return false;
+	}
+
+	TArray<FString> ConnectTiles;
+	Tile->GetPossibleIds(Direction, ConnectTiles);
+	return ConnectTiles.Find(ConnectTile) != INDEX_NONE;
+}
+
+void UWfc2DEditorSubsystem::ConnectTile(const FString& KeyTileId, const FString& ConnectTileId, ECellDirection Direction)
+{
+	UTile* KeyTile = GetTile(KeyTileId);
+	UTile* ConnectTile = GetTile(ConnectTileId);
+
+	KeyTile->ConnectId(Direction, ConnectTileId);
+	ConnectTile->ConnectId(ECellDirection(((int)Direction + 2) % 4), KeyTileId);
+}
+
+void UWfc2DEditorSubsystem::DisconnectTile(const FString& KeyTileId, const FString& ConnectTileId, ECellDirection Direction)
+{
+	UTile* KeyTile = GetTile(KeyTileId);
+	UTile* ConnectTile = GetTile(ConnectTileId);
+
+	KeyTile->DisconnectId(Direction, ConnectTileId);
+	ConnectTile->DisconnectId(ECellDirection(((int)Direction + 2) % 4), KeyTileId);
 }

@@ -25,8 +25,11 @@ public:
 	
 	void Construct(const FArguments& InArgs);
 
-	void UpdateKeyTile(const FString KeyTileIndex);
-	void UpdateConnectTile(const FString ConnectTileIndex);
+	void UpdateKeyTile(const FString& KeyTileIndex);
+	void UpdateConnectTile(const FString& ConnectTileIndex);
+
+protected:
+	void UpdateConnectTileID();
 
 private:
 	/* 用于显示 Key Tile 的 SImage 控件 */
@@ -34,4 +37,7 @@ private:
 	FSlateBrush KeyTileBrush;
 
 	TArray<TSharedPtr<SSelectItem>> SelectTiles;
+
+	FString KeyTileID;
+	FString ConnectTileID;
 };

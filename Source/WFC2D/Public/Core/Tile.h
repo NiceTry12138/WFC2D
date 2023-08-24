@@ -17,14 +17,18 @@ class WFC2D_API UTile : public UObject
 public:
 	void InitTile(FString Id, UTexture2D* Texture);
 
-	void GetPossibleIds(ECellDirection Direction, TArray<int> PossibleIds);		// 获取上面相连方块的可能性，由于旋转的问题，返回值不固定
+	void GetPossibleIds(ECellDirection Direction, TArray<FString> &PossibleIds) const; 		// 获取上面相连方块的可能性，由于旋转的问题，返回值不固定
 
 	inline UTexture2D* GetTexture() const { return TileTexture; }
 
 	inline const FString GetIndex() const { return TileID; }
 
+	void ConnectId(ECellDirection Direction, const FString& Id);
+
+	void DisconnectId(ECellDirection Direction, const FString& Id);
+
 protected:
-	ECellDirection GetDirection(ECellDirection In);
+	ECellDirection GetDirection(ECellDirection In) const;
 
 public:
 	/* 当前Tile的ID */
@@ -37,7 +41,7 @@ public:
 
 private:
 	/* 方向与其对应的可选的 Tile ID */
-	TMap<ECellDirection, TArray<int>> PossibileIDsMap;		
+	TMap<ECellDirection, TArray<FString>> PossibileIDsMap;
 
 	/* 默认无旋转 */
 	ESpriteRotate Rotate{ ESpriteRotate::Rotate_0 };		

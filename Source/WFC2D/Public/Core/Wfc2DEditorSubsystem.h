@@ -23,7 +23,13 @@ public:
 	const TArray<UTile*>& GetTiles() const;
 	TArray<FString> GetTileIndexs();
 
-	const UTile* GetTile(const FString& TileIndex) const;
+	UTile* GetTile(const FString& TileIndex) const;
+
+	bool IsConnect(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
+
+	void ConnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
+
+	void DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
 
 private:
 	int Index{ 0 };

@@ -9,7 +9,7 @@ void UTile::InitTile(FString Id, UTexture2D* Texture)
 	TileTexture = Texture;
 }
 
-void UTile::GetPossibleIds(ECellDirection Direction, TArray<int> PossibleIds)
+void UTile::GetPossibleIds(ECellDirection Direction, TArray<FString> &PossibleIds) const
 {
 	PossibleIds.Empty();
 	auto RealDirection = GetDirection(Direction);
@@ -19,7 +19,29 @@ void UTile::GetPossibleIds(ECellDirection Direction, TArray<int> PossibleIds)
 	}
 }
 
-ECellDirection UTile::GetDirection(ECellDirection In)
+void UTile::ConnectId(ECellDirection Direction, const FString& Id)
+{
+	auto Arr = PossibileIDsMap.Find(Direction);
+	if (Arr == nullptr) {
+		auto NewArr = TArray<FString>();
+		NewArr.Add(Id);
+		PossibileIDsMap.Add(Direction, NewArr);
+	}
+	else {
+		Arr->Add(Id);
+	}
+}
+
+void UTile::DisconnectId(ECellDirection Direction, const FString& Id)
+{
+	auto Arr = PossibileIDsMap.Find(Direction);
+	if (Arr == nullptr) {
+		return;
+	}
+	Arr->Remove(Id);
+}
+
+ECellDirection UTile::GetDirection(ECellDirection In) const
 {
 	return ECellDirection(((int)Rotate + (int)In) % 4);
 }

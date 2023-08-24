@@ -59,3 +59,18 @@ UTexture2D* UWFC2DHelper::GetTileTexture(const FString& TileIndex)
 
 	return Tile->GetTexture();
 }
+
+bool UWFC2DHelper::IsConnect(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction)
+{
+	return GetWfc2dEditorSubsystem()->IsConnect(KeyTile, ConnectTile, Direction);
+}
+
+void UWFC2DHelper::ConnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction)
+{
+	GetWfc2dEditorSubsystem()->ConnectTile(KeyTile, ConnectTile, Direction);
+}
+
+void UWFC2DHelper::DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction)
+{
+	GetWfc2dEditorSubsystem()->DisconnectTile(KeyTile, ConnectTile, Direction);
+}

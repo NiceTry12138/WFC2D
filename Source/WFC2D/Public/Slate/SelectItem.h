@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "Widgets/SOverlay.h"
 #include "Core/WFC2DConfig.h"
-//#include "Widgets/Input/SButton.h"
-//#include "Components/Button.h"
-//#include "SelectItem.generated.h"
+
+// Called when the selection changes
+//DECLARE_DELEGATE_TwoParams(FOnConnectStateChanged, bool, ECellDirection);
 
 /**
  * 选项Item 本质是一个图片 + 单选框，用于表示是否可以连接
@@ -18,16 +18,11 @@ class WFC2D_API SSelectItem : public SOverlay
 	//GENERATED_BODY()
 
 public:
-	SLATE_BEGIN_ARGS(SSelectItem)
-	{}
-		/* 当前Item显示的Tile的Index */
-		SLATE_ATTRIBUTE(FString, ItemIndex)
-
-		/* 当前选中的Tile的Index */
-		SLATE_ATTRIBUTE(FString, KeyItemIndex)
-
+	SLATE_BEGIN_ARGS(SSelectItem){}
 		/* 当前Item的方位 */
 		SLATE_ATTRIBUTE(ECellDirection, Direction)
+		/* 当选项框连接性变化 */
+		//SLATE_EVENT(FOnConnectStateChanged, OnConnectStateChanged)
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs);
@@ -40,15 +35,18 @@ public:
 
 	void UpdateItemImage(const FString& TileIndex);
 
+	void UpdateConnectID(const FString& KeyTileID, const FString& ConnectTileID);
+
 private:
 	TSharedPtr<SWidget> ShowImage;
 	//TSharedPtr<SWidget> CheckBox;
 
-	bool bIsChecked{false};
-
-	TAttribute<FString> ItemIndex;
-	TAttribute<FString> KeyItemIndex;
 	TAttribute<ECellDirection> Direction;
 
 	FSlateBrush ImageBrush;
+
+	//FOnConnectStateChanged OnConnectStateChanged;
+
+	FString KeyTileId;
+	FString ConnectTileId;
 };

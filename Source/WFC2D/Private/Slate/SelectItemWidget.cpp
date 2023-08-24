@@ -27,7 +27,9 @@ void SSelectItemWidget::Construct(const FArguments& InArgs)
 	};
 
 	for (const auto& NodeConfig : SelectTilesNodes) {
-		auto SelectItem = SNew(SSelectItem).Direction(NodeConfig.Direction).Visibility(EVisibility::Hidden);
+		auto SelectItem = SNew(SSelectItem)
+							.Direction(NodeConfig.Direction)
+							.Visibility(EVisibility::Hidden);
 		GridPanel->AddSlot(NodeConfig.ColIndex, NodeConfig.RowIndex, SGridPanel::Layer(1))
 		[
 			SelectItem
@@ -55,18 +57,31 @@ void SSelectItemWidget::Construct(const FArguments& InArgs)
 	];
 }
 
-void SSelectItemWidget::UpdateKeyTile(const FString KeyTileIndex)
+void SSelectItemWidget::UpdateKeyTile(const FString& KeyTileIndex)
 {
 	KeyTileBrush.SetResourceObject(UWFC2DHelper::GetTileTexture(KeyTileIndex));
 
 	KeyTileImage->SetVisibility(EVisibility::Visible);
+
+	KeyTileID = KeyTileIndex;
+	UpdateConnectTileID();
 }
 
-void SSelectItemWidget::UpdateConnectTile(const FString ConnectTileIndex)
+void SSelectItemWidget::UpdateConnectTile(const FString& ConnectTileIndex)
 {
 	for (auto Item : SelectTiles) {
 		Item->UpdateItemImage(ConnectTileIndex);
 		Item->SetVisibility(EVisibility::Visible);
+	}
+
+	ConnectTileID = ConnectTileIndex;
+	UpdateConnectTileID();
+}
+
+void SSelectItemWidget::UpdateConnectTileID()
+{
+	for (auto Item : SelectTiles) {
+		Item->UpdateConnectID(KeyTileID, ConnectTileID);
 	}
 }
 
