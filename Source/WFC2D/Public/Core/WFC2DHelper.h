@@ -30,7 +30,6 @@ public:
 	static void ConnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
 
 	static void DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
-
 private:
 
 };
