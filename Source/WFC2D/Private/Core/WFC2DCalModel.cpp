@@ -23,26 +23,72 @@ void UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int Height
 		TArray<FCell> RowCells;
 		RowCells.Reserve(ColNum);
 		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
-			
+			FCell Cell(RowIndex, ColIndex, PossibleTileIndex);
+			RowCells.Add(Cell);
 		}
 	}
 
 	FCell Cell;
-	while (!IsFullyCollapsed()) {
+	while (!IsFullyCollapsed() && ResetNum > 0) {
 		bool bIsFind = GetMinEntropy(Cell);
-		Collapse(Cell.X, Cell.Y);
-		Propagate(Cell.X, Cell.Y);
+
+		if (!bIsFind) {
+			--ResetNum;
+			ResetCells();
+			UE_LOG(LogTemp, Warning, TEXT("WFC2D: Cal Faild %d"), ResetNum);
+			continue;
+		}
+
+		Collapse(Cell);
+		Propagate(Cell);
+	}
+
+	if (ResetNum <= 0) {
+		UE_LOG(LogTemp, Warning, TEXT("WFC2D: Cal Faild"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("WFC2D: Cal Success"));
+}
+
+void UWFC2DCalModel::Propagate(const FCell& SelectCell)
+{
+	static TArray<FCell> ProcessCells;
+	ProcessCells.Empty();
+	ProcessCells.Push(SelectCell);
+
+	TArray<FCell> NeighborCells;
+	while (!ProcessCells.IsEmpty())
+	{
+		FCell CurCell = ProcessCells.Pop();
+		GetValidNeighborCells(CurCell, NeighborCells);
+
+		for (auto& Cell : NeighborCells) {
+			TArray<FString> InValidTileIndexs;
+			for (const FString& NeighborCellTile : Cell.PossibleTileIndexs) {
+				bool bIsTileCompatible = false;
+				for (const FString& CurCellTile : CurCell.PossibleTileIndexs) {
+					bIsTileCompatible |= IsTileCompatible(CurCellTile, NeighborCellTile, GetDirection(CurCell, Cell));
+				}
+				if (!bIsTileCompatible) {
+					InValidTileIndexs.Add(NeighborCellTile);
+				}
+			}
+
+			if (InValidTileIndexs.IsEmpty()) {
+				ProcessCells.Push(Cell);
+				for (const auto& InValidIndex : InValidTileIndexs) {
+					Cell.Constrain(InValidIndex);
+				}
+			}
+		}
+
 	}
 }
 
-void UWFC2DCalModel::Propagate(int X, int Y)
+void UWFC2DCalModel::Collapse(FCell& SelectCell)
 {
-	
-}
-
-void UWFC2DCalModel::Collapse(int X, int Y)
-{
-	
+	SelectCell.Collapse();
 }
 
 bool UWFC2DCalModel::IsFullyCollapsed()
@@ -87,4 +133,54 @@ bool UWFC2DCalModel::GetMinEntropy(FCell FindCell)
 	FindCell = MinEntropyCells[MinCellIndex];
 
 	return true;
+}
+
+void UWFC2DCalModel::ResetCells()
+{
+	for (int RowIndex = 0; RowIndex < RowNum; ++RowNum) {
+		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
+			Cells[RowIndex][ColIndex].Reset(PossibleTileIndex);
+		}
+	}
+}
+
+void UWFC2DCalModel::GetValidNeighborCells(FCell SelectCell, TArray<FCell>& NeighborCells)
+{
+	NeighborCells.Empty();
+
+	if (SelectCell.X + 1 < RowNum) {
+		NeighborCells.Add(Cells[SelectCell.X + 1][SelectCell.Y]);
+	}
+	if (SelectCell.X - 1 >= 0) {
+		NeighborCells.Add(Cells[SelectCell.X - 1][SelectCell.Y]);
+	}
+	if (SelectCell.Y + 1 < ColNum) {
+		NeighborCells.Add(Cells[SelectCell.X][SelectCell.Y + 1]);
+	}
+	if (SelectCell.Y - 1 >= 0) {
+		NeighborCells.Add(Cells[SelectCell.X][SelectCell.Y - 1]);
+	}
+}
+
+bool UWFC2DCalModel::IsTileCompatible(const FString& TileIndex1, const FString& TileIndex2, ECellDirection Direction)
+{
+	return UWFC2DHelper::IsConnect(TileIndex1, TileIndex2, Direction);
+}
+
+ECellDirection UWFC2DCalModel::GetDirection(const FCell& Cell1, const FCell& Cell2)
+{
+	if (Cell1.X > Cell2.X) {
+		return ECellDirection::Left;
+	}
+	if (Cell1.X < Cell2.X) {
+		return ECellDirection::Right;
+	}
+	if (Cell1.Y > Cell2.Y) {
+		return ECellDirection::Bottom;
+	}
+	if (Cell1.Y < Cell2.Y) {
+		return ECellDirection::Top;
+	}
+	UE_LOG(LogTemp, Error, TEXT("WFC2D: Same Cell"));
+	return ECellDirection();
 }
