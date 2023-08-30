@@ -48,7 +48,3 @@ void UTestFunctionLibraray::GenerationTileInWorld(TArray<FTileConfig>& Tiles)
 		}
 	}
 }
-
-void UTestFunctionLibraray::GenerationTileInWorld_1(FTileConfig& Tiles)
-{
-}

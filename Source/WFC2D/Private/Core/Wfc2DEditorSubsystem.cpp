@@ -122,5 +122,5 @@ bool UWfc2DEditorSubsystem::GenerationWFC2D(TArray<TArray<FString>>& FinalMap)
 		CalModel = NewObject<UWFC2DCalModel>();
 	}
 
-	return CalModel->Run(Tiles, 20, 20, FinalMap);
+	return CalModel->Run(Tiles, 3, 3, FinalMap);
 }

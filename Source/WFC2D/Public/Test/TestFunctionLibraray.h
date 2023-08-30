@@ -31,7 +31,4 @@ class WFC2D_API UTestFunctionLibraray : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable)
 	static void GenerationTileInWorld(TArray<FTileConfig>& Tiles);
-
-	UFUNCTION(BlueprintCallable)
-	static void GenerationTileInWorld_1(FTileConfig& Tiles);
 };

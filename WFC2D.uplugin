@@ -17,8 +17,8 @@
 	"Modules": [
 		{
 			"Name": "WFC2D",
-			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen"
 		}
 	]
 }

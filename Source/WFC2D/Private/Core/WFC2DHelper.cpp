@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Misc/FileHelper.h"
-#include "Core/WFC2DCalModel.h"
-#include "Core/Wfc2DEditorSubsystem.h"
 #include "Core/WFC2DHelper.h"
+#include "Core/Wfc2DEditorSubsystem.h"
 #include "Core/Tile.h"
+#include "Misc/FileHelper.h"
 #include "Serialization/JsonSerializer.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
