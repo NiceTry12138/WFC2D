@@ -31,6 +31,8 @@ public:
 
 	void DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
 
+	FString GetConnectConfig();
+
 private:
 	int Index{ 0 };
 	TArray<UTile*> Tiles;

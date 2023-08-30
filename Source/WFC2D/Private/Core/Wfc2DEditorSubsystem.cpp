@@ -4,6 +4,7 @@
 #include "Core/Wfc2DEditorSubsystem.h"
 #include "Core/WFC2DHelper.h"
 #include "Core/Tile.h"
+#include "Serialization/JsonSerializer.h"
 
 FString UWfc2DEditorSubsystem::GetTileIndex()
 {
@@ -77,4 +78,40 @@ void UWfc2DEditorSubsystem::DisconnectTile(const FString& KeyTileId, const FStri
 
 	KeyTile->DisconnectId(Direction, ConnectTileId);
 	ConnectTile->DisconnectId(ECellDirection(((int)Direction + 2) % 4), KeyTileId);
+}
+
+FString UWfc2DEditorSubsystem::GetConnectConfig()
+{
+	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+
+	TArray<TSharedPtr<FJsonValue>> JsonValueArray;
+	static const TArray<ECellDirection> DirectionEnums { ECellDirection::Top, ECellDirection::Right, ECellDirection::Bottom, ECellDirection::Left};
+	for (const auto& Tile : Tiles) {
+		TSharedPtr<FJsonObject> TileObject = MakeShareable(new FJsonObject);
+		TileObject->SetStringField(TEXT("PackageName"), Tile->TileFullName.ToString());
+		
+		TArray<FString> Orients{ TEXT("Top"), TEXT("Right"), TEXT("Bottom"), TEXT("Left")};
+		for (int OrientsIndex = 0; OrientsIndex < 4; ++OrientsIndex) {
+			TArray<TSharedPtr<FJsonValue>> ConnectTiles;
+			TArray<FString> PossibleIds;
+			Tile->GetPossibleIds(DirectionEnums[OrientsIndex], PossibleIds);
+			for (const auto Id : PossibleIds) {
+				ConnectTiles.Add(MakeShareable(new FJsonValueString(GetTile(Id)->TileFullName.ToString())));
+			}
+			TileObject->SetArrayField(Orients[OrientsIndex], ConnectTiles);
+		}
+
+		JsonValueArray.Add(MakeShareable(new FJsonValueObject(TileObject)));
+	}
+
+	JsonObject->SetArrayField("Tiles", JsonValueArray);
+	// 创建一个 JSON 字符串
+	FString OutputString;
+
+	// 创建一个 JSON 写入器
+	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
+
+	// 将 JSON 对象序列化为 JSON 字符串
+	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
+	return OutputString;
 }

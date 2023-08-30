@@ -122,6 +122,23 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 				[
 					ConnectConfigWidget.ToSharedRef()
 				]
+				+ SVerticalBox::Slot()
+				.AutoHeight() 
+				[
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot()
+					[
+						SNew(SButton)
+						.Text(LOCTEXT("FWFC2DModuleExport", "导出关联关系"))
+						.OnClicked_Raw(this, &FWFC2DModule::GenerationTileConnectInfo)
+					]
+					+ SHorizontalBox::Slot()
+					[
+						SNew(SButton)
+						.Text(LOCTEXT("FWFC2DModuleGenerate", "开始生成"))
+						.OnClicked_Raw(this, &FWFC2DModule::GenerationTileMap)
+					]
+				]
 			]
 		];
 }
@@ -141,6 +158,20 @@ void FWFC2DModule::UpdateSelectConnectTile(FString TileIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("TileList Connect Select -> %s"), *TileIndex);
 	ConnectConfigWidget->UpdateConnectTile(TileIndex);
+}
+
+FReply FWFC2DModule::GenerationTileMap()
+{
+	//UE_LOG(LogTemp, Log, TEXT("ProjectDir %s"), *FPaths::ProjectDir());
+	//UE_LOG(LogTemp, Log, TEXT("ConvertRelativePathToFull ProjectDir %s"), *FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()));
+	//UE_LOG(LogTemp, Log, TEXT("%s"), *FPaths:GameDir());
+	return FReply::Handled();
+}
+
+FReply FWFC2DModule::GenerationTileConnectInfo()
+{
+	UWFC2DHelper::ExportConnectConfig();
+	return FReply::Handled();
 }
 
 void FWFC2DModule::RegisterMenus()

@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Core/WFC2DHelper.h"
 #include "Core/Tile.h"
+#include "Misc/FileHelper.h"
+#include "Core/WFC2DHelper.h"
 #include "Core/Wfc2DEditorSubsystem.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
@@ -38,7 +39,8 @@ void UWFC2DHelper::InitTiles(const FName& ImportPath, TArray<UTile*> &Tiels)
 		}
 
 		auto Tile = NewObject<UTile>();
-		Tile->InitTile(Wfc2DEditorSubsystem->GetTileIndex(), TileTexture);
+		Tile->InitTile(Wfc2DEditorSubsystem->GetTileIndex(), TileTexture, AssetData.PackageName);
+		//Tile->TileFullName = AssetData.PackageName;
 
 		Tiels.Push(Tile);
 	}
@@ -73,4 +75,12 @@ void UWFC2DHelper::ConnectTile(const FString& KeyTile, const FString& ConnectTil
 void UWFC2DHelper::DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction)
 {
 	GetWfc2dEditorSubsystem()->DisconnectTile(KeyTile, ConnectTile, Direction);
+}
+
+void UWFC2DHelper::ExportConnectConfig()
+{
+	FString JsonContent = GetWfc2dEditorSubsystem()->GetConnectConfig();
+	FString ThePath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()).Append(TEXT("Wfc2dConnectConfig.json"));
+
+	FFileHelper::SaveStringToFile(JsonContent, *ThePath);
 }

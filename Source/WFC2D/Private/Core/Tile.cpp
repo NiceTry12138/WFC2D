@@ -3,10 +3,11 @@
 
 #include "Core/Tile.h"
 
-void UTile::InitTile(FString Id, UTexture2D* Texture)
+void UTile::InitTile(FString Id, UTexture2D* Texture, FName FullName)
 {
 	TileID = Id;
 	TileTexture = Texture;
+	TileFullName = FullName;
 }
 
 void UTile::GetPossibleIds(ECellDirection Direction, TArray<FString> &PossibleIds) const

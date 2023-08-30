@@ -23,6 +23,9 @@ protected:
 	void UpdateSelectTile(FString TileIndex);
 	void UpdateSelectConnectTile(FString TileIndex);
 
+	FReply GenerationTileMap();
+	FReply GenerationTileConnectInfo();
+
 private:
 
 	void RegisterMenus();

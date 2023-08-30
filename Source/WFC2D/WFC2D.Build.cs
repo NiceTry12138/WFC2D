@@ -47,6 +47,7 @@ public class WFC2D : ModuleRules
 				"SlateCore",
                 "EditorSubsystem",
                 "ContentBrowser",
+                "Json",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
