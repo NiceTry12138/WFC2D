@@ -32,6 +32,8 @@ public:
 	static void DisconnectTile(const FString& KeyTile, const FString& ConnectTile, ECellDirection Direction);
 
 	static void ExportConnectConfig();
+
+	static bool GenerationWfc2d(TArray<TArray<FString>>& FinalMap);
 private:
 
 };

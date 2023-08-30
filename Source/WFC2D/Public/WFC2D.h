@@ -23,6 +23,7 @@ protected:
 	void UpdateSelectTile(FString TileIndex);
 	void UpdateSelectConnectTile(FString TileIndex);
 
+	FReply ImporTileConnectInfo();
 	FReply GenerationTileMap();
 	FReply GenerationTileConnectInfo();
 

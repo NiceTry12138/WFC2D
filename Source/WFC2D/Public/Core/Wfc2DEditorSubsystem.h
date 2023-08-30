@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EditorSubsystem.h"
 #include "Wfc2DEditorSubsystem.generated.h"
 
 class UTile;
+class UWFC2DCalModel;
 
 /**
  * 
@@ -33,7 +33,11 @@ public:
 
 	FString GetConnectConfig();
 
+	bool GenerationWFC2D(TArray<TArray<FString>>& FinalMap);
+
 private:
 	int Index{ 0 };
 	TArray<UTile*> Tiles;
+
+	UWFC2DCalModel* CalModel;
 };

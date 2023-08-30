@@ -129,6 +129,12 @@ TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTa
 					+ SHorizontalBox::Slot()
 					[
 						SNew(SButton)
+						.Text(LOCTEXT("FWFC2DModuleExport", "导入关联关系"))
+						.OnClicked_Raw(this, &FWFC2DModule::ImporTileConnectInfo)
+					]
+					+ SHorizontalBox::Slot()
+					[
+						SNew(SButton)
 						.Text(LOCTEXT("FWFC2DModuleExport", "导出关联关系"))
 						.OnClicked_Raw(this, &FWFC2DModule::GenerationTileConnectInfo)
 					]
@@ -160,11 +166,23 @@ void FWFC2DModule::UpdateSelectConnectTile(FString TileIndex)
 	ConnectConfigWidget->UpdateConnectTile(TileIndex);
 }
 
+FReply FWFC2DModule::ImporTileConnectInfo()
+{
+	return FReply::Handled();
+}
+
 FReply FWFC2DModule::GenerationTileMap()
 {
 	//UE_LOG(LogTemp, Log, TEXT("ProjectDir %s"), *FPaths::ProjectDir());
 	//UE_LOG(LogTemp, Log, TEXT("ConvertRelativePathToFull ProjectDir %s"), *FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()));
 	//UE_LOG(LogTemp, Log, TEXT("%s"), *FPaths:GameDir());
+	TArray<TArray<FString>> FinalMap;
+	bool bIsSuccess = UWFC2DHelper::GenerationWfc2d(FinalMap);
+
+	if (!bIsSuccess) {
+		return FReply::Handled();
+	}
+
 	return FReply::Handled();
 }
 

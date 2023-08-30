@@ -3,9 +3,9 @@
 
 #include "Core/Tile.h"
 
-void UTile::InitTile(FString Id, UTexture2D* Texture, FName FullName)
+void UTile::InitTile(UTexture2D* Texture, FName FullName)
 {
-	TileID = Id;
+	TileID = FullName.ToString();
 	TileTexture = Texture;
 	TileFullName = FullName;
 }

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Core/Wfc2DEditorSubsystem.h"
-#include "Core/WFC2DHelper.h"
 #include "Core/Tile.h"
+#include "Core/WFC2DHelper.h"
+#include "Core/WFC2DCalModel.h"
 #include "Serialization/JsonSerializer.h"
 
 FString UWfc2DEditorSubsystem::GetTileIndex()
@@ -114,4 +114,13 @@ FString UWfc2DEditorSubsystem::GetConnectConfig()
 	// 将 JSON 对象序列化为 JSON 字符串
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
 	return OutputString;
+}
+
+bool UWfc2DEditorSubsystem::GenerationWFC2D(TArray<TArray<FString>>& FinalMap)
+{
+	if (!CalModel) {
+		CalModel = NewObject<UWFC2DCalModel>();
+	}
+
+	return CalModel->Run(Tiles, 20, 20, FinalMap);
 }

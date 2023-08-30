@@ -5,7 +5,7 @@
 #include "Core/WFC2DHelper.h"
 #include "Core/Tile.h"
 
-void UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int HeightConfig)
+bool UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int HeightConfig, TArray<TArray<FString>>& FinalMap)
 {
 	// 目标是 200 * 100 的地图，那么有200列，100行，所以widgh对应的行应该是 HeightConfig
 	RowNum = HeightConfig;
@@ -19,13 +19,14 @@ void UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int Height
 	Cells.Reset();
 	Cells.Reserve(RowNum);
 
-	for (int RowIndex = 0; RowIndex < RowNum; ++RowNum) {
+	for (int RowIndex = 0; RowIndex < RowNum; ++RowIndex) {
 		TArray<FCell> RowCells;
 		RowCells.Reserve(ColNum);
 		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
 			FCell Cell(RowIndex, ColIndex, PossibleTileIndex);
 			RowCells.Add(Cell);
 		}
+		Cells.Add(RowCells);
 	}
 
 	FCell Cell;
@@ -45,10 +46,20 @@ void UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int Height
 
 	if (ResetNum <= 0) {
 		UE_LOG(LogTemp, Warning, TEXT("WFC2D: Cal Faild"));
-		return;
+		return false;
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("WFC2D: Cal Success"));
+	FinalMap.Empty();
+
+	for (int RowIndex = 0; RowIndex < RowNum; ++RowIndex) {
+		TArray<FString> RowIndexs;
+		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
+			RowIndexs.Add(Cells[RowIndex][ColIndex].TileIndex);
+		}
+		FinalMap.Add(RowIndexs);
+	}
+	return true;
 }
 
 void UWFC2DCalModel::Propagate(const FCell& SelectCell)
@@ -64,6 +75,13 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 		GetValidNeighborCells(CurCell, NeighborCells);
 
 		for (auto& Cell : NeighborCells) {
+			if (Cell.bWasHandled) {
+				continue;
+			}
+
+			Cells[Cell.X][Cell.Y].bWasHandled = true;
+			// Cell.bWasHandled = true; // 值传递 设置无效
+
 			TArray<FString> InValidTileIndexs;
 			for (const FString& NeighborCellTile : Cell.PossibleTileIndexs) {
 				bool bIsTileCompatible = false;
@@ -72,38 +90,50 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 				}
 				if (!bIsTileCompatible) {
 					InValidTileIndexs.Add(NeighborCellTile);
-				}
+				}	
 			}
 
 			if (InValidTileIndexs.IsEmpty()) {
 				ProcessCells.Push(Cell);
 				for (const auto& InValidIndex : InValidTileIndexs) {
-					Cell.Constrain(InValidIndex);
+					Cells[Cell.X][Cell.Y].Constrain(InValidIndex);
+					//Cell.Constrain(InValidIndex); // 值传递 设置无效
 				}
 			}
 		}
-
 	}
+
+	for (int RowIndex = 0; RowIndex < RowNum; ++RowIndex) {
+		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
+			Cells[RowIndex][ColIndex].bWasHandled = false;
+		}
+	}
+
 }
 
 void UWFC2DCalModel::Collapse(FCell& SelectCell)
 {
-	SelectCell.Collapse();
+	//SelectCell.Collapse();
+	Cells[SelectCell.X][SelectCell.Y].Collapse();
 }
 
 bool UWFC2DCalModel::IsFullyCollapsed()
 {
+	int NoSelectedCellNum = 0;
 	for (const auto& RowCells : Cells) {
 		for (const auto& Cell : RowCells) {
 			if (!Cell.bIsSelected) {
-				return false;
+				//return false;
+				NoSelectedCellNum++;
 			}
 		}
 	}
-	return true;
+
+	//return true;
+	return NoSelectedCellNum == 0;
 }
 
-bool UWFC2DCalModel::GetMinEntropy(FCell FindCell)
+bool UWFC2DCalModel::GetMinEntropy(FCell& FindCell)
 {
 	int MinEntropy = INT_MAX;
 	TArray<FCell> MinEntropyCells;	// 最低熵值相同 可能有多个 
@@ -137,7 +167,7 @@ bool UWFC2DCalModel::GetMinEntropy(FCell FindCell)
 
 void UWFC2DCalModel::ResetCells()
 {
-	for (int RowIndex = 0; RowIndex < RowNum; ++RowNum) {
+	for (int RowIndex = 0; RowIndex < RowNum; ++RowIndex) {
 		for (int ColIndex = 0; ColIndex < ColNum; ++ColIndex) {
 			Cells[RowIndex][ColIndex].Reset(PossibleTileIndex);
 		}

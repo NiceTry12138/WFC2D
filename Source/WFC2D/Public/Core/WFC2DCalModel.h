@@ -16,11 +16,21 @@ public:
 	FCell() {}
 	FCell(int XConf, int YConf, const TArray<FString> PossibleTileIndexsConf): X(XConf), Y(YConf), PossibleTileIndexs(PossibleTileIndexsConf){  }
 
-	void Reset(const TArray<FString>& NewPossible) { PossibleTileIndexs = NewPossible; bIsSelected = false; }
+	void Reset(const TArray<FString>& NewPossible) { PossibleTileIndexs = NewPossible; bIsSelected = false; bWasHandled = false; }
 
 	void Collapse() { bIsSelected = true; TileIndex = PossibleTileIndexs[FMath::RandHelper(PossibleTileIndexs.Num())]; }
 
 	void Constrain(const FString& InValidIndex) { PossibleTileIndexs.Remove(InValidIndex); }
+
+	bool operator ==(const FCell& Other) const
+	{
+		return X == Other.X && Y == Other.Y;
+	}
+
+	bool operator !=(const FCell& Other) const
+	{
+		return X != Other.X || Y != Other.Y;
+	}
 public:
 	int X;		// 横轴坐标
 	int Y;		// 纵轴坐标
@@ -29,6 +39,7 @@ public:
 
 	FString TileIndex;
 	bool bIsSelected { false };
+	bool bWasHandled { false };
 };
 
 /**
@@ -40,7 +51,7 @@ class WFC2D_API UWFC2DCalModel : public UObject
 	GENERATED_BODY()
 	
 public:
-	void Run(const TArray<UTile*> Tiles, int WidghConfig, int HeightConfig);
+	bool Run(const TArray<UTile*> Tiles, int WidghConfig, int HeightConfig, TArray<TArray<FString>>& FinalMap);
 
 protected:
 
@@ -54,7 +65,7 @@ protected:
 	bool IsFullyCollapsed();
 
 	/* 获得熵值最小的方格坐标 */
-	bool GetMinEntropy(FCell FindCell);
+	bool GetMinEntropy(FCell& FindCell);
 
 	/* 还原全部Cell 重新坍塌 */
 	void ResetCells();
