@@ -61,11 +61,11 @@ void FWFC2DModule::ShutdownModule()
 
 TSharedRef<SDockTab> FWFC2DModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
-	FText WidgetText = FText::Format(
-		LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
-		FText::FromString(TEXT("FWFC2DModule::OnSpawnPluginTab")),
-		FText::FromString(TEXT("WFC2D.cpp"))
-		);
+	//FText WidgetText = FText::Format(
+	//	LOCTEXT("WindowWidgetText", "Add code to {0} in {1} to override this window's contents"),
+	//	FText::FromString(TEXT("FWFC2DModule::OnSpawnPluginTab")),
+	//	FText::FromString(TEXT("WFC2D.cpp"))
+	//	);
 
 	//TArray<UTile*> Tiles;
 	//UWFC2DHelper::InitTiles(FName("/Game/Arts/Tiles"), Tiles);
@@ -156,13 +156,13 @@ void FWFC2DModule::PluginButtonClicked()
 
 void FWFC2DModule::UpdateSelectTile(FString TileIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TileList Select -> %s"), *TileIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("TileList Select -> %s"), *TileIndex);
 	ConnectConfigWidget->UpdateKeyTile(TileIndex);
 }
 
 void FWFC2DModule::UpdateSelectConnectTile(FString TileIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TileList Connect Select -> %s"), *TileIndex);
+	//UE_LOG(LogTemp, Warning, TEXT("TileList Connect Select -> %s"), *TileIndex);
 	ConnectConfigWidget->UpdateConnectTile(TileIndex);
 }
 

@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Core/Wfc2DEditorSubsystem.h"
-#include "Core/Tile.h"
-#include "Core/WFC2DCalModel.h"
 #include "Misc/FileHelper.h"
+#include "Core/WFC2DCalModel.h"
+#include "Core/Wfc2DEditorSubsystem.h"
 #include "Core/WFC2DHelper.h"
+#include "Core/Tile.h"
+#include "Serialization/JsonSerializer.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
 static const FVector2D TileSize = FVector2D(100, 100);
@@ -88,5 +89,33 @@ void UWFC2DHelper::ExportConnectConfig()
 
 bool UWFC2DHelper::GenerationWfc2d(TArray<TArray<FString>>& FinalMap)
 {
-	return GetWfc2dEditorSubsystem()->GenerationWFC2D(FinalMap);
+	bool bIsSuccess = GetWfc2dEditorSubsystem()->GenerationWFC2D(FinalMap);
+
+	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+
+	TArray<TSharedPtr<FJsonValue>> JsonValueArray;
+	for (int RowIndex = 0; RowIndex < FinalMap.Num(); ++RowIndex) {
+		for (int ColIndex = 0; ColIndex < FinalMap[RowIndex].Num(); ++ColIndex) {
+			TSharedPtr<FJsonObject> TileObject = MakeShareable(new FJsonObject);
+			TileObject->SetNumberField("RowIndex", RowIndex);
+			TileObject->SetNumberField("ColIndex", ColIndex);
+			TileObject->SetStringField("PackageName", FinalMap[RowIndex][ColIndex]);
+			JsonValueArray.Add(MakeShareable(new FJsonValueObject(TileObject)));
+		}
+	}
+
+	JsonObject->SetArrayField("Tiles", JsonValueArray);
+	// 创建一个 JSON 字符串
+	FString OutputString;
+
+	// 创建一个 JSON 写入器
+	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
+
+	// 将 JSON 对象序列化为 JSON 字符串
+	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
+
+	FString ThePath = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()).Append(TEXT("Wfc2dMap.json"));
+	FFileHelper::SaveStringToFile(OutputString, *ThePath);
+
+	return bIsSuccess;
 }
