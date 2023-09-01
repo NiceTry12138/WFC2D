@@ -11,6 +11,9 @@ bool UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int Height
 	RowNum = HeightConfig;
 	ColNum = WidghConfig;
 
+	IteratorIndex = 0;
+
+	PossibleTileIndex = TArray<FString>();
 	PossibleTileIndex.Empty();
 	for (const auto& Tile : Tiles) {
 		PossibleTileIndex.Add(Tile->GetIndex());
@@ -35,13 +38,18 @@ bool UWFC2DCalModel::Run(const TArray<UTile*> Tiles, int WidghConfig, int Height
 
 		if (!bIsFind) {
 			--ResetNum;
+			IteratorIndex = 0;
 			ResetCells();
-			UE_LOG(LogTemp, Warning, TEXT("WFC2D: Cal Faild %d"), ResetNum);
+			UE_LOG(LogTemp, Warning, TEXT("WFC2D: Cal Faild %d ----------------------------------"), ResetNum);
 			continue;
 		}
 
+		++IteratorIndex;
+
 		Collapse(Cell);
 		Propagate(Cell);
+
+		LogInfo();
 	}
 
 	if (ResetNum <= 0) {
@@ -66,7 +74,7 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 {
 	static TArray<FCell> ProcessCells;
 	ProcessCells.Empty();
-	ProcessCells.Push(SelectCell);
+	ProcessCells.Push(Cells[SelectCell.X][SelectCell.Y]);
 
 	TArray<FCell> NeighborCells;
 	while (!ProcessCells.IsEmpty())
@@ -75,7 +83,7 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 		GetValidNeighborCells(CurCell, NeighborCells);
 
 		for (auto& Cell : NeighborCells) {
-			if (Cell.bWasHandled) {
+			if (Cells[Cell.X][Cell.Y].bWasHandled) {
 				continue;
 			}
 
@@ -83,7 +91,7 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 			// Cell.bWasHandled = true; // 值传递 设置无效
 
 			TArray<FString> InValidTileIndexs;
-			for (const FString& NeighborCellTile : Cell.PossibleTileIndexs) {
+			for (const FString& NeighborCellTile : Cells[Cell.X][Cell.Y].PossibleTileIndexs) {
 				bool bIsTileCompatible = false;
 				for (const FString& CurCellTile : CurCell.PossibleTileIndexs) {
 					bIsTileCompatible |= IsTileCompatible(CurCellTile, NeighborCellTile, GetDirection(CurCell, Cell));
@@ -93,12 +101,10 @@ void UWFC2DCalModel::Propagate(const FCell& SelectCell)
 				}	
 			}
 
-			if (InValidTileIndexs.IsEmpty()) {
-				ProcessCells.Push(Cell);
-				for (const auto& InValidIndex : InValidTileIndexs) {
-					Cells[Cell.X][Cell.Y].Constrain(InValidIndex);
-					//Cell.Constrain(InValidIndex); // 值传递 设置无效
-				}
+			ProcessCells.Push(Cell);
+			for (const auto& InValidIndex : InValidTileIndexs) {
+				Cells[Cell.X][Cell.Y].Constrain(InValidIndex);
+				//Cell.Constrain(InValidIndex); // 值传递 设置无效
 			}
 		}
 	}
@@ -199,18 +205,33 @@ bool UWFC2DCalModel::IsTileCompatible(const FString& TileIndex1, const FString& 
 
 ECellDirection UWFC2DCalModel::GetDirection(const FCell& Cell1, const FCell& Cell2)
 {
+	// X 表示行序号 所以 X 不同其实是上下不同 而不是高度不同
+	// Y 表示列序号 所以 Y 不同其实是左右不同 而不是高度不同
 	if (Cell1.X > Cell2.X) {
-		return ECellDirection::Left;
-	}
-	if (Cell1.X < Cell2.X) {
-		return ECellDirection::Right;
-	}
-	if (Cell1.Y > Cell2.Y) {
 		return ECellDirection::Bottom;
 	}
-	if (Cell1.Y < Cell2.Y) {
+	if (Cell1.X < Cell2.X) {
 		return ECellDirection::Top;
+	}
+	if (Cell1.Y > Cell2.Y) {
+		return ECellDirection::Left;
+	}
+	if (Cell1.Y < Cell2.Y) {
+		return ECellDirection::Right;
 	}
 	UE_LOG(LogTemp, Error, TEXT("WFC2D: Same Cell"));
 	return ECellDirection();
+}
+
+void UWFC2DCalModel::LogInfo()
+{
+	UE_LOG(LogTemp, Log, TEXT("WFC2D: IteratorIndex = %d"), IteratorIndex);
+
+	for (const auto& RowTiles : Cells) {
+		for (const auto& Tile : RowTiles) {
+			UE_LOG(LogTemp, Log, TEXT("%s"), *Tile.LogString());
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("================================================"));
 }

@@ -21,7 +21,7 @@ public:
 
 	inline UTexture2D* GetTexture() const { return TileTexture; }
 
-	inline const FString GetIndex() const { return TileID; }
+	inline const FString& GetIndex() const { return TileID; }
 
 	void ConnectId(ECellDirection Direction, const FString& Id);
 

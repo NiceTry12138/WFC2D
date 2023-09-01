@@ -16,11 +16,52 @@ public:
 	FCell() {}
 	FCell(int XConf, int YConf, const TArray<FString> PossibleTileIndexsConf): X(XConf), Y(YConf), PossibleTileIndexs(PossibleTileIndexsConf){  }
 
-	void Reset(const TArray<FString>& NewPossible) { PossibleTileIndexs = NewPossible; bIsSelected = false; bWasHandled = false; }
+	void Reset(const TArray<FString>& NewPossible) { 
+		PossibleTileIndexs = NewPossible; 
+		bIsSelected = false; 
+		bWasHandled = false; 
+	}
 
-	void Collapse() { bIsSelected = true; TileIndex = PossibleTileIndexs[FMath::RandHelper(PossibleTileIndexs.Num())]; }
+	void Collapse() { 
+		bIsSelected = true; 
+		TileIndex = PossibleTileIndexs[FMath::RandHelper(PossibleTileIndexs.Num())]; 
+		PossibleTileIndexs.Empty(); 
+		PossibleTileIndexs.Push(TileIndex);  
+	}
 
-	void Constrain(const FString& InValidIndex) { PossibleTileIndexs.Remove(InValidIndex); }
+	void Constrain(const FString& InValidIndex) { 
+		PossibleTileIndexs.Remove(InValidIndex); 
+	}
+
+	FString LogString() const { 
+		FString Result;
+
+		Result.Append(TEXT("X = "));
+		Result.Append(FString::FromInt(X));
+
+		Result.Append(TEXT(" Y = "));
+		Result.Append(FString::FromInt(Y));
+
+
+		if (bIsSelected) {
+			Result.Append(TEXT(" Selected Index = "));
+			Result.Append(TileIndex);
+		}
+		else {
+			Result.Append(TEXT(" UnSelected"));
+		}
+
+		Result.Append(TEXT(" PossibleTileIndexs : [ "));
+
+		for (const auto& PossibleIndex : PossibleTileIndexs) {
+			Result.Append(PossibleIndex);
+			Result.Append(TEXT(" "));
+		}
+
+		Result.Append(TEXT("]"));
+
+		return Result;
+	}
 
 	bool operator ==(const FCell& Other) const
 	{
@@ -79,10 +120,14 @@ protected:
 
 	/* 返回 Cell2 在 Cell1 的 上下左右 */
 	ECellDirection GetDirection(const FCell& Cell1, const FCell& Cell2);
+
+	void LogInfo();
 private:
 	TArray<FString> PossibleTileIndex;
 
 	TArray<TArray<FCell>> Cells;
+
+	int IteratorIndex { 0 };
 
 	int RowNum;
 	int ColNum;
