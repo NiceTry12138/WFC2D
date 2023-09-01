@@ -6,11 +6,11 @@
 
 预设的几个方块
 
-![](Images/Tilies.png)
+![](/Images/Tilies.png)
 
 最后生成出来的地图
 
-![](Images/FinalMap.png)
+![](/Images/FinalMap.png)
 
 ## 代码解释
 
@@ -50,19 +50,19 @@ Slate 相关界面启动的起点就是 `FWFC2DModule::OnSpawnPluginTab`
 
 1. 显示所有待选择主方块 => `STilesList`
 
-![](Images/001.png)
+![](/Images/001.png)
 
 2. 显示所有待选择连接方块 => `STilesList`
 
-![](Images/002.png)
+![](/Images/002.png)
 
 3. 设置主方块与关联方块的关联性 => `SSelectItemWidget`
 
-![](Images/003.png)
+![](/Images/003.png)
 
 4. 功能按钮 => `SButton`
 
-![](Images/004.png)
+![](/Images/004.png)
 
 
 ## TODO 功能
